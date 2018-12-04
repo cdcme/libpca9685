@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.13)
+
+project(libpca9685 VERSION 1.0.0
+        DESCRIPTION "Driver for the NXP Semiconductors PCA9685 16-channel 12-bit PWM I2C-bus LED Controller"
+        LANGUAGES C)
+
+set(CMAKE_C_STANDARD 11)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
+add_library(pca9685 STATIC "")
+add_library(libpca9685 ALIAS pca9685)
+add_subdirectory(include)
+add_subdirectory(src)
+
+target_compile_options(pca9685 PUBLIC -Werror)
+target_compile_features(pca9685 PUBLIC c_std_11)
+
+if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
