@@ -1,5 +1,7 @@
 #include "libpca9685.h"
 
+#include <stdio.h>
+
 static uint8_t *register_address;
 
 void create_led_driver(uint8_t *address) {
@@ -12,10 +14,12 @@ void create_all_call_bus(uint8_t *address) {
 }
 
 void turn_on_led(uint8_t led_number) {
+	(void)led_number;
 	*register_address = LED_ON;
 }
 
 void turn_off_led(uint8_t led_number) {
+	(void)led_number;
 	*register_address = LED_OFF;
 }
 

@@ -16,7 +16,11 @@ target_sources(test_runner
             runner.h
 )
 
-target_link_libraries(test_runner PUBLIC greatest libpca9685)
+# theft: property-based testing lib
+find_library(THEFT_LIB theft)
+find_library(MATH_LIBRARY m)
+
+target_link_libraries(test_runner PUBLIC greatest ${MATH_LIBRARY} ${THEFT_LIB} libpca9685)
 set_target_properties(test_runner PROPERTIES FOLDER test)
 
 add_test(test_runner test_runner)

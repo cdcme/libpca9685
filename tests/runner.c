@@ -3,6 +3,7 @@
 GREATEST_MAIN_DEFS();
 
 int main(int argc, char **argv) {
+	struct greatest_report_t report;
 	(void)argc;
 	(void)argv;
 
@@ -13,5 +14,12 @@ int main(int argc, char **argv) {
 	RUN_SUITE(test_led_states);
 
 	GREATEST_PRINT_REPORT();
-	return greatest_all_passed();
+
+	greatest_get_report(&report);
+
+	if (report.failed > 0) {
+		return 1;
+	}
+
+	return 0;
 }

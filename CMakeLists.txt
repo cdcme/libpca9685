@@ -13,7 +13,7 @@ add_library(libpca9685 ALIAS pca9685)
 add_subdirectory(include)
 add_subdirectory(src)
 
-target_compile_options(pca9685 PUBLIC -Werror)
+target_compile_options(pca9685 PUBLIC -W -Wall -Werror)
 target_compile_features(pca9685 PUBLIC c_std_11)
 
 if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)

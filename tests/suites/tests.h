@@ -2,6 +2,7 @@
 #define TESTS_H
 
 #include "greatest.h"
+#include "theft.h"
 
 #include <assert.h>
 #include <inttypes.h>
