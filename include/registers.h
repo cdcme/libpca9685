@@ -18,8 +18,8 @@
 #define LED_OFF ZERO
 #define LED_ON  ONE
 
-/* the PCA9685 has 12-bit resolution, or 4096 steps from full off to full on */
-#define LED_RESOLUTION 4096
+/* the PCA9685 has 12-bit resolution, or 4096 (0–4095) steps from full off to full on */
+#define LED_MAX_STEPS 4095
 
 /* To calculate the remaining LED register addresses for a single channel,
  * we only need to calculate the base and add 1–3. To calculate the base, LED_OFFSET + (MULTIPLIER * channel).

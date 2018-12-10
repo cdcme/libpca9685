@@ -8,8 +8,8 @@
 #include "registers.h"
 
 typedef struct mock_register {
-	uint8_t address;
-	uint8_t value;
+    uint8_t address;
+    uint8_t value;
 } mock_register_s;
 
 void set_up_mock_driver(pca9685_s *);

@@ -21,23 +21,23 @@
  * static uint8_t my_bus_byte_reader(pca9685_s *driver, register_address r) {
  *     // Your I2C read logic here
  *
- *     printf("\n%s", __func__);
- *	   printf("\n===============\n");
- *	   printf("Driver status: %s\n", driver->status);
- *	   printf("Register address: %" PRIu8 "\n", r);
+ *    printf("\n%s", __func__);
+ *    printf("\n===============\n");
+ *    printf("Driver status: %s\n", driver->status);
+ *    printf("Register address: %" PRIu8 "\n", r);
  *
- *	   return 0;
+ *    return 0;
  * }
  *
  * static uint8_t my_bus_byte_writer(pca9685_s *driver, register_address r, data_in d) {
  *     // Your I2C write logic here
  *
- *     printf("\n%s", __func__);
- *	   printf("\n===============\n");
- *	   printf("Driver status: %s\n", driver->status);
- *	   printf("Register address: %" PRIu8 "\n", r);
+ *    printf("\n%s", __func__);
+ *    printf("\n===============\n");
+ *    printf("Driver status: %s\n", driver->status);
+ *    printf("Register address: %" PRIu8 "\n", r);
  *
- *	   return 0;
+ *    return 0;
  * }
  *
  * static pca9685_s my_driver = pca9685(.bus_reader=my_bus_byte_reader, .bus_writer=my_bus_byte_writer);

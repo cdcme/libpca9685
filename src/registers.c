@@ -3,19 +3,19 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-uint8_t led_on_low(int v) {
+static uint8_t led_on_low(int v) {
     return (uint8_t)(v & 0xFF);
 }
 
-uint8_t led_on_high(int v) {
+static uint8_t led_on_high(int v) {
     return (uint8_t)(v >> 0x08);
 }
 
-uint8_t led_off_low(int v) {
+static uint8_t led_off_low(int v) {
     return (uint8_t)(v >> 0x08);
 }
 
-uint8_t led_off_high(int v) {
+static uint8_t led_off_high(int v) {
     return (uint8_t)(v & 0xFF);
 }
 
@@ -47,16 +47,16 @@ static void i2c_bus_read(pca9685_s *h, uint8_t r) {
 
 void set_led_bytes(pca9685_s *h, uint8_t c, int on, int off) {
     int const on_bit_value = (on < 0) ? 0
-        : (on > LED_RESOLUTION) ? LED_RESOLUTION
-        : LED_RESOLUTION - on;
+        : (on > LED_MAX_STEPS) ? LED_MAX_STEPS
+        : LED_MAX_STEPS - on;
 
     int const off_bit_value = (off < 0) ? 0
-        : (off > LED_RESOLUTION) ? LED_RESOLUTION
-        : LED_RESOLUTION - off;
+        : (off > LED_MAX_STEPS) ? LED_MAX_STEPS
+        : LED_MAX_STEPS - off;
 
-	uint8_t const on_low_r = channel_to_register_base(c);
+    uint8_t const on_low_r = channel_to_register_base(c);
 
-	i2c_bus_write(h, on_low_r, led_on_low(on_bit_value));
+    i2c_bus_write(h, on_low_r, led_on_low(on_bit_value));
     i2c_bus_write(h, on_low_r + (uint8_t)1, led_on_high(on_bit_value));
     i2c_bus_write(h, on_low_r + (uint8_t)2, led_off_low(off_bit_value));
     i2c_bus_write(h, on_low_r + (uint8_t)3, led_off_high(off_bit_value));
