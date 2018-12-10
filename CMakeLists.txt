@@ -16,7 +16,7 @@ add_subdirectory(src)
 target_compile_options(pca9685 PUBLIC -W -Wall -Werror)
 target_compile_features(pca9685 PUBLIC c_std_11)
 
-if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
+if(TESTING)
     enable_testing()
     add_subdirectory(tests)
 endif()
