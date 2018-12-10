@@ -3,7 +3,7 @@
 
 #include "greatest.h"
 
-SUITE_EXTERN(test_start_state);
-SUITE_EXTERN(test_led_states);
+SUITE_EXTERN(test_driver_init);
+SUITE_EXTERN(test_register_ops);
 
 #endif

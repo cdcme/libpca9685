@@ -1,50 +1,32 @@
 #include "libpca9685.h"
+#include "registers.h"
 
-static uint8_t *register_address;
+#include <stdio.h>
+#include <stdlib.h>
 
-void create_led_driver(uint8_t *address) {
-	register_address = address;
-	*register_address = LED_OFF;
-}
+pca9685_s configure_handle(pca9685_s driver){
+	if(!(driver.bus_reader && driver.bus_writer)){
+		driver.command = "cb_check";
+	    driver.status = "Invalid input: bus reader and bus writer callbacks are both required.";
+	} else {
+		driver.command = "rw_check";
 
-void create_all_call_bus(uint8_t *address) {
-	*address = BUS_ENABLED;
-}
+		// Quick & dirty read/write check; only verifies the interface!
+		uint8_t r = driver.bus_reader(&driver, LED0_ON_L);
+		uint8_t w = driver.bus_writer(&driver, LED0_ON_L, r);
 
-void turn_on_led(uint8_t led_number) {
-	*register_address = LED_ON;
-}
+		// A read from register LED0_ON_L should only ever return 0x00 on init, since LEDs
+		// are off by default, and a successful write should always return 0 to our caller.
+		int rw = (r == LED_OFF && w == OK);
 
-void turn_off_led(uint8_t led_number) {
-	*register_address = LED_OFF;
-}
+		if(!rw) driver.status = "Invalid configuration: cannot read and/or write via provided callbacks.";
 
-void create_subcall_bus(uint8_t *bus_address, uint8_t register_address) {
-	switch (register_address) {
-
-		case SUBADR1 :
-			*bus_address = SUBADR1_DEFAULTS;
-			break;
-		case SUBADR2:
-			*bus_address = SUBADR2_DEFAULTS;
-			break;
-		case SUBADR3:
-			*bus_address = SUBADR3_DEFAULTS;
-			break;
-		default :
-			*bus_address = BUS_DISABLED;
+		driver.address = LED0_ON_L;
+		driver.data = r;
 	}
-}
 
-void create_mode_register(uint8_t *defaults, uint8_t register_address){
-	switch (register_address) {
-		case MODE1 :
-			*defaults = MODE1_DEFAULTS;
-			break;
-		case MODE2 :
-			*defaults = MODE2_DEFAULTS;
-			break;
-		default :
-			*defaults = BUS_DISABLED;
-	}
+	driver.command = driver.command == NULL ? "init" : driver.command;
+	driver.status = driver.status == NULL ? "ok" : driver.status;
+
+	return driver;
 }
