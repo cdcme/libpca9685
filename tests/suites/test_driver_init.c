@@ -37,7 +37,7 @@ TEST expect_verifies_callbacks(void) {
 }
 
 TEST expect_command_to_be_rw_check(void) {
-    ASSERT_STR_EQ(mock_driver.command, "rw_check");
+    ASSERT_STR_EQ(mock_driver.command, "i2c_write");
 
     PASS();
 }

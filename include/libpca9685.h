@@ -12,69 +12,6 @@
 
 #include <inttypes.h>
 
-/**
- * Usage:
- *
- * \code
- * #include "libpca9685.h"
- *
- * static uint8_t my_bus_byte_reader(pca9685_s *driver, register_address r) {
- *     // Your I2C read logic here
- *
- *    printf("\n%s", __func__);
- *    printf("\n===============\n");
- *    printf("Driver status: %s\n", driver->status);
- *    printf("Register address: %" PRIu8 "\n", r);
- *
- *    return 0;
- * }
- *
- * static uint8_t my_bus_byte_writer(pca9685_s *driver, register_address r, data_in d) {
- *     // Your I2C write logic here
- *
- *    printf("\n%s", __func__);
- *    printf("\n===============\n");
- *    printf("Driver status: %s\n", driver->status);
- *    printf("Register address: %" PRIu8 "\n", r);
- *
- *    return 0;
- * }
- *
- * static pca9685_s my_driver = pca9685(.bus_reader=my_bus_byte_reader, .bus_writer=my_bus_byte_writer);
- *
- * turn_on_led(&my_driver, 3);
- * printf("\nResult returned!\ncommand: %s\nstatus: %s\n", my_driver.command, my_driver.status);
- *
- * set_pwm_frequency(&my_driver, 25000);
- * printf("\nResult returned!\ncommand: %s\nstatus: %s\n", my_driver.command, my_driver.status);
- *
- * \endcode
- *
- * Output:
- *
- * \code
- *
- * turn_on_led
- * ===============
- * Driver status: ok
- * Register address: 0x13
- *
- * Result returned!
- * command: set_pwm_frequency
- * status: ok
- *
- * set_pwm_frequency
- * ===============
- * Driver status: ok
- * Register address: 0xFE
- *
- * Result returned!
- * command: set_pwm_frequency
- * status: ok
- *
- * \endcode
- */
-
 /** Initializes a driver_handle struct with values provided by the user. */
 #define pca9685(...) (configure_handle((pca9685_s){__VA_ARGS__}))
 
@@ -93,7 +30,7 @@ struct driver_handle;
 typedef uint8_t (*i2c_bus_read_cb)(struct driver_handle *, uint8_t);
 typedef uint8_t (*i2c_bus_write_cb)(struct driver_handle *, uint8_t , uint8_t);
 
-/** Type definition for the driver handle. */
+/** Type definition for the driver handle */
 typedef struct driver_handle {
     uint8_t data;                  // Data last read/written
     uint8_t address;               // Last register read to/written from
@@ -107,5 +44,22 @@ typedef struct driver_handle {
 pca9685_s configure_handle(pca9685_s);
 
 /** Public API */
+
+/** Sets the output frequency; default is 200Hz. */
+void set_frequency(pca9685_s *, int frequency);
+
+/** Sets the duty cycle. Use this if channel on/off are not enough for your application.
+ *  If channel is NONE, this is set for all channels. Delay and percent are both % values. */
+void set_duty_cycle(pca9685_s *, int channel, int delay, int percent);
+
+/** Turn on/off LEDs or motors by channel. If channel is NONE, acts on all channels. */
+void channel_on(pca9685_s *, int channel);
+void channel_off(pca9685_s *, int channel);
+
+/** Resets. Soft attempts an orderly reset, which saves register values. Hard resets to manufacturer defaults. */
+void soft_reset(pca9685_s *);
+void hard_reset(pca9685_s *);
+
+/** more to come... */
 
 #endif

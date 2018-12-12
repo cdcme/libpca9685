@@ -13,6 +13,9 @@ add_library(libpca9685 ALIAS pca9685)
 add_subdirectory(include)
 add_subdirectory(src)
 
+find_library(MATH m)
+target_link_libraries(pca9685 ${MATH})
+
 target_compile_options(pca9685 PUBLIC -W -Wall -Werror)
 target_compile_features(pca9685 PUBLIC c_std_11)
 

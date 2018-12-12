@@ -72,7 +72,6 @@ property_can_set_led_byte_data(struct theft *t, void *arg1, void *arg2, void *ar
 
     ASSERT_STR_EQ(mock_driver.command, "i2c_write");
     ASSERT_STR_EQ(mock_driver.status, "ok");
-    ASSERT(mock_driver.data == 0 || mock_driver.data == 0xFE || mock_driver.data == 0xFF);
 
     return THEFT_TRIAL_PASS;
 }
@@ -90,10 +89,50 @@ TEST expect_register_writes_to_succeed(void) {
     PASS();
 }
 
+TEST expect_prescale_calculations_to_be_correct(void) {
+    // Quick spot checks for now... bounds checking below
+    int prescale_v = calculate_prescale_from_frequency(200);
+    ASSERT_EQ(prescale_v, 30);
+
+    prescale_v = calculate_prescale_from_frequency(50);
+    ASSERT_EQ(prescale_v, 121);
+
+    prescale_v = calculate_prescale_from_frequency(25);
+    ASSERT_EQ(prescale_v, 243);
+
+    PASS();
+}
+
+static enum theft_trial_res
+property_prescale_values_are_within_bounds(struct theft *t, void *arg1) {
+    (void)t;
+    int mock_frequency = *(int *)arg1;
+    int prescale_v = calculate_prescale_from_frequency(mock_frequency);
+
+    ASSERT(prescale_v >= 3 && prescale_v <= 255);
+
+    return THEFT_TRIAL_PASS;
+}
+
+TEST expect_prescale_values_to_be_in_bounds(void) {
+    enum theft_run_res res;
+
+    run_config.name = __func__;
+    run_config.prop1 = property_prescale_values_are_within_bounds;
+
+    res = theft_run(&run_config);
+
+    ASSERT_EQ(res, THEFT_RUN_PASS);
+
+    PASS();
+}
+
 SUITE(test_register_ops) {
     SET_SETUP(setup_cb, NULL);
 
     RUN_TEST(expect_register_for_channel_to_be_correct);
     RUN_TEST(expect_converted_channels_to_be_in_bounds);
     RUN_TEST(expect_register_writes_to_succeed);
+    RUN_TEST(expect_prescale_calculations_to_be_correct);
+    RUN_TEST(expect_prescale_values_to_be_in_bounds);
 }

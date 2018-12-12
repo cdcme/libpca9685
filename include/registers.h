@@ -10,6 +10,9 @@
 #define OK   ZERO
 #define ERR  ONE
 
+/** For flags */
+#define NONE -1
+
 /** Bus logic bits: 0 for write/enabled, 1 for read/disabled */
 #define BUS_ENABLED  ZERO
 #define BUS_DISABLED ONE
@@ -18,8 +21,15 @@
 #define LED_OFF ZERO
 #define LED_ON  ONE
 
-/* the PCA9685 has 12-bit resolution, or 4096 (0–4095) steps from full off to full on */
-#define LED_MAX_STEPS 4095
+/** The PCA9685 has 12-bit resolution, or 4096 (0–4095) steps from full off to full on */
+#define LED_MAX_BITS 4095
+#define LED_MAX_STEPS (LED_MAX_BITS + 1)
+
+/** Oscillator clock frequency is 25MHz */
+#define OSCILLATOR 25000000.0
+
+/** Osclillator takes 500μs (500000ns) to switch states */
+#define BEAT 500000
 
 /* To calculate the remaining LED register addresses for a single channel,
  * we only need to calculate the base and add 1–3. To calculate the base, LED_OFFSET + (MULTIPLIER * channel).
@@ -62,7 +72,7 @@
 #define ALL_LED_OFF_H 0xFD
 
 /** Prescaler register for PWM output frequency */
-#define PRE_SCALE 0xFE
+#define PRESCALE 0xFE
 
 /** Bits for Mode register 1: 8 bits total */
 #define ALLCALL 1<<0
@@ -74,8 +84,9 @@
 #define EXTCLK  1<<6
 #define RESTART 1<<7
 
-/** Mode 1 register defaults */
+/** Mode 1 register default and sleep disabled settings */
 #define MODE1_DEFAULTS 0x88
+#define MODE1_NO_SLEEP 0x80
 
 /** Bits for mode register 2: 8 bits total (bits 5–7 are unused) */
 #define OUTNE0 1<<0
@@ -85,15 +96,33 @@
 #define INVRT  1<<4
 
 /** Mode 2 register defaults */
-#define MODE2_DEFAULTS 0x20
+#define MODE2_DEFAULTS 0x40
+
+/** Private utilities */
 
 /** Channel to register base conversion.
- * Takes a channel (like 11) and returns the first register (0x32). */
+ * Takes a zero-based channel (like 10) and returns the first register (0x32). */
 uint8_t channel_to_register_base(uint8_t channel);
 
-/** Set/get all four of one LED channel's bytes */
-void set_led_bytes(pca9685_s *, uint8_t channel, int on_resolution, int off_resolution);
-void get_led_bytes(pca9685_s *, uint8_t channel);
+/* Takes a frequency in Hz and calculates the correct prescale value */
+int calculate_prescale_from_frequency(int frequency);
+
+/** Low-level access to user callback wrappers for initialization */
+void i2c_bus_read(pca9685_s *, uint8_t r);
+void i2c_bus_write(pca9685_s *, uint8_t r, uint8_t d);
+
+/** Low-level access to register writes for testing */
+void set_led_bytes(pca9685_s *, int c, int on, int off);
+
+/** Reset driver state */
+void reset_driver_soft(pca9685_s *h);
+void reset_driver_hard(pca9685_s *h);
+
+/** Sets the value of the PRE_SCALE register with the provided PWM output frequency */
+void set_pwm_frequency(pca9685_s *h, int frequency);
+
+/** Sets the PWM duty cycle with a % delay at a provided % on time */
+void set_pwm_duty_cycle(pca9685_s *h, int channel, int delay, int percent);
 
 #endif
 
