@@ -8,14 +8,16 @@
 #include "registers.h"
 
 typedef struct mock_register {
-    uint8_t address;
-    uint8_t value;
+    u8 address;
+    u8 value;
 } mock_register_s;
 
 void set_up_mock_driver(pca9685_s *);
-void set_up_theft_run_config(struct theft_run_config *);
-void set_up_theft_run_config2(struct theft_run_config *);
-uint8_t mock_bus_reader(pca9685_s *, uint8_t address);
-uint8_t mock_bus_writer(pca9685_s *, uint8_t address, uint8_t data_in);
+void set_up_theft_run_config_u8(struct theft_run_config *config);
+void set_up_theft_run_config_int(struct theft_run_config *config);
+void set_up_theft_run_config_int_int(struct theft_run_config *config);
+void set_up_theft_run_config_u8_int_int(struct theft_run_config *config);
+u8 mock_bus_reader(pca9685_s *, u8 address);
+u8 mock_bus_writer(pca9685_s *, u8 address, u8 data_in);
 
 #endif

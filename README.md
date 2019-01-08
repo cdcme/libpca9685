@@ -83,16 +83,16 @@ int main(int argc, char **argv) {
     printf("%s\n", my_driver.status);
 
     // Set the chip's frequency to 300Hz
-    set_frequency(&my_driver, 300);
+    my_driver.set_frequency(&my_driver, 300);
 
     // Set up a basic timer for example purposes (10 minutes, in seconds)
     int simple_timer = 600;
 
     // Flash all LEDs on and off continuously until the timer runs out
     while(simple_timer > 0) {
-        channel_on(&my_driver, NONE);
+        my_driver.channel_on(&my_driver, -1);
         sleep(1);
-        channel_off(&my_driver, NONE);
+        my_driver.channel_off(&my_driver, -1);
         sleep(1);
 
         simple_timer--;
@@ -101,10 +101,10 @@ int main(int argc, char **argv) {
     // Do some other stuff here...
 
     // You can attempt an orderly shutdown
-    soft_reset(&my_driver);
+    my_driver.soft_reset(&my_driver);
 
     // Or maybe just restore all defaults
-    hard_reset(&my_driver);
+    my_driver.hard_reset(&my_driver);
 
     // pigpio-specific...
     int close = i2c_close(pi, (uint)handle);
