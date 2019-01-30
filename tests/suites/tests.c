@@ -2,13 +2,13 @@
 
 #include <stdint.h>
 
-mock_register_s mockr;
+mock_register_s mock_driver;
 
 void set_up_mock_driver(pca9685_s *driver) {
     *driver = pca9685(.bus_reader=mock_bus_reader, .bus_writer=mock_bus_writer);
 }
 
-void set_up_theft_run_config(struct theft_run_config *config) {
+void set_up_theft_run_config_u8(struct theft_run_config *config) {
     theft_seed seed = theft_seed_of_time();
 
     *config = (struct theft_run_config){
@@ -20,7 +20,32 @@ void set_up_theft_run_config(struct theft_run_config *config) {
     };
 }
 
-void set_up_theft_run_config2(struct theft_run_config *config) {
+void set_up_theft_run_config_int(struct theft_run_config *config) {
+    theft_seed seed = theft_seed_of_time();
+
+    *config = (struct theft_run_config){
+        .type_info = {
+            theft_get_builtin_type_info(THEFT_BUILTIN_int)
+        },
+        .seed = seed,
+        .trials = 100
+    };
+}
+
+void set_up_theft_run_config_int_int(struct theft_run_config *config) {
+    theft_seed seed = theft_seed_of_time();
+
+    *config = (struct theft_run_config){
+        .type_info = {
+            theft_get_builtin_type_info(THEFT_BUILTIN_int),
+            theft_get_builtin_type_info(THEFT_BUILTIN_int)
+        },
+        .seed = seed,
+        .trials = 100
+    };
+}
+
+void set_up_theft_run_config_u8_int_int(struct theft_run_config *config) {
     theft_seed seed = theft_seed_of_time();
 
     *config = (struct theft_run_config){
@@ -34,18 +59,18 @@ void set_up_theft_run_config2(struct theft_run_config *config) {
     };
 }
 
-uint8_t mock_bus_reader(pca9685_s *driver, uint8_t address) {
+u8 mock_bus_reader(pca9685_s *driver, u8 address) {
     (void)driver;
 
-    mockr.address = address;
-    return mockr.value;
+    mock_driver.address = address;
+    return mock_driver.value;
 }
 
-uint8_t mock_bus_writer(pca9685_s *driver, uint8_t address, uint8_t data_in) {
+u8 mock_bus_writer(pca9685_s *driver, u8 address, u8 data_in) {
     (void)driver;
 
-    mockr.address = address;
-    mockr.value = data_in;
+    mock_driver.address = address;
+    mock_driver.value = data_in;
 
     return 0;
 }

@@ -27,6 +27,18 @@ TEST expect_callback_identities(void) {
     PASS();
 }
 
+TEST expect_public_functions_to_be_present(void) {
+    ASSERT(mock_driver.soft_reset &&
+        mock_driver.hard_reset &&
+        mock_driver.set_frequency &&
+        mock_driver.channel_on &&
+        mock_driver.channel_off &&
+        mock_driver.set_duty_cycle
+    );
+
+    PASS();
+}
+
 TEST expect_verifies_callbacks(void) {
     pca9685_s mock_d = pca9685();
     ASSERT_FALSE(mock_d.bus_reader && mock_d.bus_writer);
@@ -36,7 +48,7 @@ TEST expect_verifies_callbacks(void) {
     PASS();
 }
 
-TEST expect_command_to_be_rw_check(void) {
+TEST expect_command_to_be_i2c_write(void) {
     ASSERT_STR_EQ(mock_driver.command, "i2c_write");
 
     PASS();
@@ -54,7 +66,8 @@ SUITE(test_driver_init) {
     RUN_TEST(expect_data_to_be_zero);
     RUN_TEST(expect_callbacks_to_be_present);
     RUN_TEST(expect_callback_identities);
+    RUN_TEST(expect_public_functions_to_be_present);
     RUN_TEST(expect_verifies_callbacks);
-    RUN_TEST(expect_command_to_be_rw_check);
+    RUN_TEST(expect_command_to_be_i2c_write);
     RUN_TEST(expect_status_to_be_ok);
 }

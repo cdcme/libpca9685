@@ -1,28 +1,31 @@
-#ifndef REGISTERS_LIBRARY_H
-#define REGISTERS_LIBRARY_H
+#ifndef PCA9685_REGISTERS_H
+#define PCA9685_REGISTERS_H
 
 #include <inttypes.h>
 #include "libpca9685.h"
 
-/** Conveniences for testing */
+/** Conveniences */
 #define ZERO 0x00
-#define ONE  0x01
+#define LOW  ZERO
 #define OK   ZERO
+
+#define ONE  0x01
+#define HIGH ONE
 #define ERR  ONE
 
 /** For flags */
-#define NONE -1
+#define ALL -1
 
 /** Bus logic bits: 0 for write/enabled, 1 for read/disabled */
 #define BUS_ENABLED  ZERO
 #define BUS_DISABLED ONE
 
 /** LED bits: 0 for completely off, 1 for completely on */
-#define LED_OFF ZERO
-#define LED_ON  ONE
+#define LED_OFF LOW
+#define LED_ON  HIGH
 
 /** The PCA9685 has 12-bit resolution, or 4096 (0–4095) steps from full off to full on */
-#define LED_MAX_BITS 4095
+#define LED_MAX_BITS  4095
 #define LED_MAX_STEPS (LED_MAX_BITS + 1)
 
 /** Oscillator clock frequency is 25MHz */
@@ -39,6 +42,10 @@
 #define MAX_CHANNEL       15
 #define MIN_CHANNEL        0
 #define MULTIPLIER         4
+#define PRESCALE_MIN       3
+#define PRESCALE_MAX     255
+#define FREQ_MIN          24
+#define FREQ_MAX        1526
 
 /** Register definitions - all defaults are in base16, and all flags are expressed as bit shifts */
 
@@ -67,12 +74,9 @@
 
 /** Registers for loading all LED registers by byte */
 #define ALL_LED_ON_L  0xFA
-#define ALL_LED_ON_H  0xFB
-#define ALL_LED_OFF_L 0xFC
-#define ALL_LED_OFF_H 0xFD
 
 /** Prescaler register for PWM output frequency */
-#define PRESCALE 0xFE
+#define PRE_SCALE 0xFE
 
 /** Bits for Mode register 1: 8 bits total */
 #define ALLCALL 1<<0
@@ -86,7 +90,7 @@
 
 /** Mode 1 register default and sleep disabled settings */
 #define MODE1_DEFAULTS 0x88
-#define MODE1_NO_SLEEP 0x80
+#define MODE1_NO_SLEEP 0x01
 
 /** Bits for mode register 2: 8 bits total (bits 5–7 are unused) */
 #define OUTNE0 1<<0
@@ -98,18 +102,19 @@
 /** Mode 2 register defaults */
 #define MODE2_DEFAULTS 0x40
 
-/** Private utilities */
-
 /** Channel to register base conversion.
  * Takes a zero-based channel (like 10) and returns the first register (0x32). */
 uint8_t channel_to_register_base(uint8_t channel);
 
-/* Takes a frequency in Hz and calculates the correct prescale value */
+/* Calculations */
 int calculate_prescale_from_frequency(int frequency);
+int calculate_delay_from_percentage(int delay);
+int calculate_on_time_from_percentage(int percent);
+int calculate_off_steps_from_delay_and_on_time(int delay, int on_time);
 
 /** Low-level access to user callback wrappers for initialization */
-void i2c_bus_read(pca9685_s *, uint8_t r);
-void i2c_bus_write(pca9685_s *, uint8_t r, uint8_t d);
+void pca9685_i2c_bus_read(pca9685_s *, uint8_t r);
+void pca9685_i2c_bus_write(pca9685_s *, uint8_t r, uint8_t d);
 
 /** Low-level access to register writes for testing */
 void set_led_bytes(pca9685_s *, int c, int on, int off);
