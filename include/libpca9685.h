@@ -68,13 +68,13 @@ struct pca9685_driver;
  *
  * \see https://github.com/torvalds/linux/blob/master/include/linux/i2c.h#L152
  */
-typedef u8 (*pca9685_i2c_bus_read_cb)(struct pca9685_driver *, u8);
-typedef u8 (*pca9685_i2c_bus_write_cb)(struct pca9685_driver *, u8, u8);
+typedef u8 (*pca9685_i2c_bus_read_cb)(struct pca9685_driver *driver, u8 address);
+typedef u8 (*pca9685_i2c_bus_write_cb)(struct pca9685_driver *driver, u8 address, u8 data);
 
 /** Public API function signatures */
-typedef void (*pca9685_fn)(struct pca9685_driver *);
-typedef void (*pca9685_chan_freq_fn)(struct pca9685_driver *, int);
-typedef void (*pca9685_duty_cycle_fn)(struct pca9685_driver *, int, int, int);
+typedef void (*pca9685_fn)(struct pca9685_driver *driver);
+typedef void (*pca9685_chan_freq_fn)(struct pca9685_driver *driver, int chan_or_freq);
+typedef void (*pca9685_duty_cycle_fn)(struct pca9685_driver *, int led_channel, int delay_percent, int percent_on);
 
 /** Type definition for the driver handle */
 typedef struct pca9685_driver {
