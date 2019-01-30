@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TBD
 
 ## v0.2.0
+### Added
+- Tests for calculations
+### Changed
 - Moved driver functions into struct for a cleaner API and namespacing
-- Improved tests, added tests for calculations
+- Improved tests
 
 ## v0.1.0
 ### Added
