@@ -140,7 +140,7 @@ TEST expect_prescale_values_to_be_in_bounds(void) {
 
 TEST expect_delay_calculations_to_be_accurate(void) {
     int delay = calculate_delay_from_percentage(0);
-    ASSERT_EQ(delay, 41);
+    ASSERT_EQ(delay, 0);
 
     delay = calculate_delay_from_percentage(100);
     ASSERT_EQ(delay, LED_MAX_STEPS);
@@ -154,7 +154,7 @@ property_delay_calculations_are_in_bounds(struct theft *t, void *arg1) {
     int delay_p = *(int *)arg1;
     int delay_from_p = calculate_delay_from_percentage(delay_p);
 
-    ASSERT(delay_from_p >= 1 && delay_from_p <= LED_MAX_STEPS);
+    ASSERT(delay_from_p >= 0 && delay_from_p <= LED_MAX_STEPS);
 
     return THEFT_TRIAL_PASS;
 }

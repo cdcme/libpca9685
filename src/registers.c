@@ -71,7 +71,7 @@ int calculate_prescale_from_frequency(int frequency){
 // Calculate delay from percentage
 int calculate_delay_from_percentage(int d) {
     // Datasheet pp. 17 & 25
-    int percent_delay = (d < 1) ? 1
+    int percent_delay = (d < 0) ? 0
         : (d > 100) ? 100
         : d;
 
@@ -125,6 +125,8 @@ void set_pwm_frequency(pca9685_s *h, int frequency) {
 void set_pwm_duty_cycle(pca9685_s *h, int c, int d, int p) {
     int delay = calculate_delay_from_percentage(d);
     int on_time = calculate_on_time_from_percentage(p);
+
+    if(delay <= 0) delay = 1;
 
     int on_steps = delay - 1;
     int off_steps = calculate_off_steps_from_delay_and_on_time(delay, on_time);
