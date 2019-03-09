@@ -2,7 +2,7 @@
 #define PCA9685_REGISTERS_H
 
 #include <inttypes.h>
-#include "libpca9685.h"
+#include "pca9685.h"
 
 /** Conveniences */
 #define ZERO 0x00

@@ -1,4 +1,4 @@
-#include "libpca9685.h"
+#include "pca9685.h"
 #include "registers.h"
 
 #include <stdio.h>
@@ -12,11 +12,11 @@ static void set_duty_cycle(pca9685_s *h, int channel, int delay, int percent) {
 }
 
 static void channel_on(pca9685_s *h, int channel) {
-    set_pwm_duty_cycle(h, channel, 1, 100);
+    set_pwm_duty_cycle(h, channel, 0, 100);
 }
 
 static void channel_off(pca9685_s *h, int channel) {
-    set_pwm_duty_cycle(h, channel, 1, 0);
+    set_pwm_duty_cycle(h, channel, 0, 0);
 }
 
 static void soft_reset(pca9685_s *h) {

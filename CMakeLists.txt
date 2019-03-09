@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(libpca9685 VERSION 1.0.0
+project(libpca9685 VERSION 0.2.1
         DESCRIPTION "Driver for the NXP Semiconductors PCA9685 16-channel 12-bit PWM I2C-bus LED Controller"
         LANGUAGES C)
 
@@ -23,3 +23,7 @@ if(TESTING)
     enable_testing()
     add_subdirectory(tests)
 endif()
+
+install(TARGETS pca9685 DESTINATION lib)
+install(FILES include/pca9685.h DESTINATION include)
+

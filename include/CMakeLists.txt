@@ -1,6 +1,6 @@
 target_sources(pca9685
     PUBLIC
-        libpca9685.h
+        pca9685.h
     PRIVATE
         registers.h
 )
