@@ -108,9 +108,9 @@ uint8_t channel_to_register_base(uint8_t channel);
 
 /* Calculations */
 int calculate_prescale_from_frequency(int frequency);
-int calculate_delay_from_percentage(int delay);
+int calculate_delay_time_from_percentage(int delay);
 int calculate_on_time_from_percentage(int percent);
-int calculate_off_steps_from_delay_and_on_time(int delay, int on_time);
+int calculate_off_time_from_delay_and_on_time(int delay, int on_time);
 
 /** Low-level access to user callback wrappers for initialization */
 void pca9685_i2c_bus_read(pca9685_s *, uint8_t r);

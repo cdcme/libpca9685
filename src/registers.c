@@ -29,6 +29,7 @@ void pca9685_i2c_bus_read(pca9685_s *h, u8 r) {
 }
 
 void pca9685_i2c_bus_write(pca9685_s *h, u8 r, u8 d) {
+    fprintf(stdout, "\nWriting %X to register %X\n", d, r);
     u8 result = h->bus_writer(h, r, d);
     h->command = "i2c_write";
     h->status = result == 0 ? "ok" : "error";
@@ -69,7 +70,7 @@ int calculate_prescale_from_frequency(int frequency){
 }
 
 // Calculate delay from percentage
-int calculate_delay_from_percentage(int d) {
+int calculate_delay_time_from_percentage(int d) {
     // Datasheet pp. 17 & 25
     int percent_delay = (d < 0) ? 0
         : (d > 100) ? 100
@@ -89,17 +90,23 @@ int calculate_on_time_from_percentage(int p) {
 }
 
 // calculate off steps from delay and on time
-int calculate_off_steps_from_delay_and_on_time(int d, int t) {
-   int off_steps = (d + t) - 1;
-   if(off_steps > LED_MAX_STEPS) off_steps = (off_steps - LED_MAX_STEPS);
+int calculate_off_time_from_delay_and_on_time(int d, int t) {
+    int off_time = (d + t) - 1;
 
-   return off_steps;
+    off_time = (off_time <= 0) ? LED_MAX_BITS
+        : (off_time > LED_MAX_STEPS) ? (off_time - LED_MAX_STEPS)
+        : off_time;
+
+   return off_time;
 }
 
 /** Register operations */
 
 void set_led_bytes(pca9685_s *h, int c, int on, int off) {
     u8 channel = (c == ALL) ? (u8)ALL_LED_ON_L : channel_to_register_base((u8)c);
+
+    fprintf(stdout, "\nSetting time ON %d time OFF %d on channel %X\n", on, off, channel);
+
     pca9685_i2c_bus_write(h, channel, led_low(on));
     pca9685_i2c_bus_write(h, channel + (u8)1, led_high(on));
     pca9685_i2c_bus_write(h, channel + (u8)2, led_low(off));
@@ -123,15 +130,19 @@ void set_pwm_frequency(pca9685_s *h, int frequency) {
 }
 
 void set_pwm_duty_cycle(pca9685_s *h, int c, int d, int p) {
-    int delay = calculate_delay_from_percentage(d);
+    int delay_time = calculate_delay_time_from_percentage(d);
     int on_time = calculate_on_time_from_percentage(p);
+    int off_time = calculate_off_time_from_delay_and_on_time(delay_time, on_time);
 
-    if(delay <= 0) delay = 1;
+    int on_steps = (delay_time <= 0) ? 0 : (delay_time - 1);
 
-    int on_steps = delay - 1;
-    int off_steps = calculate_off_steps_from_delay_and_on_time(delay, on_time);
+    fprintf(stdout, "\nreceived delay %d and on_time %d\n", d, p);
+    fprintf(stdout, "\ndelay_time: %d\n", delay_time);
+    fprintf(stdout, "\non_time: %d\n", on_time);
+    fprintf(stdout, "\non_steps: %d\n", on_time);
+    fprintf(stdout, "\noff_time: %d\n", off_time);
 
-    set_led_bytes(h, c, on_steps, off_steps);
+    set_led_bytes(h, c, on_steps, off_time);
 }
 
 // Reset without having to power cycle (p. 15)

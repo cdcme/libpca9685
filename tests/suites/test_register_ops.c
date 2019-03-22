@@ -139,10 +139,10 @@ TEST expect_prescale_values_to_be_in_bounds(void) {
 }
 
 TEST expect_delay_calculations_to_be_accurate(void) {
-    int delay = calculate_delay_from_percentage(0);
+    int delay = calculate_delay_time_from_percentage(0);
     ASSERT_EQ(delay, 0);
 
-    delay = calculate_delay_from_percentage(100);
+    delay = calculate_delay_time_from_percentage(100);
     ASSERT_EQ(delay, LED_MAX_STEPS);
 
     PASS();
@@ -152,7 +152,7 @@ static enum theft_trial_res
 property_delay_calculations_are_in_bounds(struct theft *t, void *arg1) {
     (void)t;
     int delay_p = *(int *)arg1;
-    int delay_from_p = calculate_delay_from_percentage(delay_p);
+    int delay_from_p = calculate_delay_time_from_percentage(delay_p);
 
     ASSERT(delay_from_p >= 0 && delay_from_p <= LED_MAX_STEPS);
 
@@ -206,21 +206,21 @@ TEST expect_on_time_calculations_to_be_in_bounds(void) {
     PASS();
 }
 
-TEST expect_off_steps_calculations_to_be_accurate(void) {
-    int off_steps = calculate_off_steps_from_delay_and_on_time(1, 0);
-    ASSERT_EQ(off_steps, 0);
+TEST expect_off_time_calculations_to_be_accurate(void) {
+    int off_time = calculate_off_time_from_delay_and_on_time(1, 0);
+    ASSERT_EQ(off_time, LED_MAX_BITS);
 
-    off_steps = calculate_off_steps_from_delay_and_on_time(1, 25);
-    ASSERT_EQ(off_steps, 25);
+    off_time = calculate_off_time_from_delay_and_on_time(1, 25);
+    ASSERT_EQ(off_time, 25);
 
-    off_steps = calculate_off_steps_from_delay_and_on_time(25, 25);
-    ASSERT_EQ(off_steps, 49);
+    off_time = calculate_off_time_from_delay_and_on_time(25, 25);
+    ASSERT_EQ(off_time, 49);
 
-    off_steps = calculate_off_steps_from_delay_and_on_time(25, 1);
-    ASSERT_EQ(off_steps, 25);
+    off_time = calculate_off_time_from_delay_and_on_time(25, 1);
+    ASSERT_EQ(off_time, 25);
 
-    off_steps = calculate_off_steps_from_delay_and_on_time(LED_MAX_STEPS, LED_MAX_STEPS);
-    ASSERT_EQ(off_steps, LED_MAX_BITS);
+    off_time = calculate_off_time_from_delay_and_on_time(LED_MAX_STEPS, LED_MAX_STEPS);
+    ASSERT_EQ(off_time, LED_MAX_BITS);
 
     PASS();
 }
@@ -237,5 +237,5 @@ SUITE(test_register_ops) {
     RUN_TEST(expect_delay_calculations_to_be_in_bounds);
     RUN_TEST(expect_on_time_calculations_to_be_accurate);
     RUN_TEST(expect_on_time_calculations_to_be_in_bounds);
-    RUN_TEST(expect_off_steps_calculations_to_be_accurate);
+    RUN_TEST(expect_off_time_calculations_to_be_accurate);
 }
