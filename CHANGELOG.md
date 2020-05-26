@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - TBD
 
+## v0.2.2
+- Update documentation, license
 ## v0.2.1
 - Make installable
 ## v0.2.0
@@ -44,8 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Destructive (hard) reset
 - Documentation, including:
   - this CHANGELOG
-  - [AUTHORS](https://github.com/minnowpod/libpca9685/tree/master/AUTHORS)
-  - [CONDUCT](https://github.com/minnowpod/libpca9685/tree/master/CONDUCT.md)
-  - [CONTRIBUTING](https://github.com/minnowpod/libpca9685/tree/master/CONTRIBUTING.md)
-  - [LICENSE](https://github.com/minnowpod/libpca9685/tree/master/LICENSE)
-  - [README](https://github.com/minnowpod/libpca9685/tree/master/README.md)
+  - [AUTHORS](https://github.com/carlodicelico/libpca9685/tree/master/AUTHORS)
+  - [CONDUCT](https://github.com/carlodicelico/libpca9685/tree/master/CONDUCT.md)
+  - [CONTRIBUTING](https://github.com/carlodicelico/libpca9685/tree/master/CONTRIBUTING.md)
+  - [LICENSE](https://github.com/carlodicelico/libpca9685/tree/master/LICENSE)
+  - [README](https://github.com/carlodicelico/libpca9685/tree/master/README.md)
